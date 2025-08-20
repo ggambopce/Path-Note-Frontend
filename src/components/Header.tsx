@@ -39,8 +39,6 @@ export default function Header() {
     // 실패해도 무시
   } finally {
     resetLoginUser();
-    // JS 쿠키 전략이면 필요 시 쿠키 제거
-    // setCookie('accessToken', '', { path: '/', expires: new Date(0) });
   }
 };
     //          render: 카카오 로그인 버튼 컴포넌트 렌더링          //
@@ -62,7 +60,7 @@ export default function Header() {
             >
               로그아웃
             </button>
-          </div>
+          </div>}
         ) : (
           <button
             onClick={onSocialLogin}
@@ -74,4 +72,3 @@ export default function Header() {
       </nav>
     </header>
   );
-}
