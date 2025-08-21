@@ -1,4 +1,6 @@
 interface TmapAPI {
+  InfoWindow: any;
+  Event: any;
   Map: new (id: string, options: Record<string, unknown>) => TmapInstance;
   LatLng: new (lat: number, lng: number) => TmapLatLng;
 }
