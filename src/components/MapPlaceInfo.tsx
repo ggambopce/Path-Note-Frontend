@@ -12,27 +12,12 @@ export default function MapPlaceInfo() {
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <h3 className="text-[15px] font-extrabold text-gray-900 truncate">
-                장소 이름
+                대전대학교
               </h3>
               {/* 태그/배지 */}
-              <span className="ml-2 shrink-0 rounded-full bg-gray-100 text-gray-600 text-[11px] px-2 py-0.5 border border-gray-200">
+              <span className="ml-2 shrink-0 rounded-full bg-main-100 text-gray-600 text-[11px] px-2 py-0.5 border border-gray-200">
                 태그
               </span>
-            </div>
-
-            {/* 서브액션(더보기 ···) */}
-            <div className="mt-1">
-              <button
-                type="button"
-                className="text-gray-400 hover:text-gray-600"
-                aria-label="more"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5">
-                  <circle cx="5" cy="12" r="2" fill="currentColor" />
-                  <circle cx="12" cy="12" r="2" fill="currentColor" />
-                  <circle cx="19" cy="12" r="2" fill="currentColor" />
-                </svg>
-              </button>
             </div>
 
             {/* 주소 라인 */}
@@ -46,7 +31,7 @@ export default function MapPlaceInfo() {
                 </svg>
               </span>
               <span className="text-[14px] leading-5 break-keep">
-                주소 정보
+                대전 동구 용운동 123-45
               </span>
             </div>
 
@@ -60,17 +45,15 @@ export default function MapPlaceInfo() {
                   />
                 </svg>
               </span>
-              <span className="text-[14px] leading-5">전화번호</span>
+              <span className="text-[14px] leading-5">042-280-2114</span>
 
-              {/* 우측 점점점(옵션 자리) */}
-              <span className="ml-auto text-gray-300 select-none">…</span>
             </div>
 
             {/* 액션 버튼 */}
-            <div className="mt-3">
+            <div className="mt-3 flex justify-center">
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 text-[12px] font-medium px-3 py-1.5 transition"
+                className="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-main-200 hover:bg-blue-100 text-[12px] font-medium px-3 py-1.5 transition"
               >
                 코스에 추가하기
               </button>
@@ -80,7 +63,7 @@ export default function MapPlaceInfo() {
       </div>
 
       {/* 말풍선 꼬리 */}
-      <div className="absolute left-14 -bottom-2 w-6 h-5 rotate-45 bg-white/95 shadow-md ring-1 ring-black/5" />
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-6 h-5 rotate-45 bg-white/95 shadow-md ring-1 ring-black/5" />
     </div>
   );
 }

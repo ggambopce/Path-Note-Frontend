@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import MapPlaceInfo from './MapPlaceInfo';
+import CoursePlaceItem from './CoursePlaceItem';
+import CoursePlaceCreate from './CoursePlaceCreate';
 
 interface MapProps {
   width: string;
@@ -72,8 +74,21 @@ const Map = ({
       />
 
       {/* 맵 장소 정보 컴포넌트 추가 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute top-1/2 left-7/8 -translate-x-1/2 -translate-y-1/2">
         <MapPlaceInfo />
+      </div>
+
+      <div className="absolute top-1/2 left-3/5 -translate-x-1/2 -translate-y-1/2">
+        <CoursePlaceCreate />
+      </div>
+
+      {/* 코스 장소 아이템 컴포넌트 추가 */}
+      <div className='absolute top-1/2 left-1/5 -translate-x-1/2 -translate-y-1/2'>
+        <CoursePlaceItem />
+        <CoursePlaceItem />
+        <CoursePlaceItem />
+        <CoursePlaceItem />     
+        
       </div>
     </div>
   );
