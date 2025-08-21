@@ -4,10 +4,36 @@ export default function CoursePlaceCreate() {
     //          render: 코스 장소 등록 컴포넌트 랜더링          //
     return (
     <section className="rounded-3xl bg-white shadow-lg ring-1 ring-black/5 p-5 md:p-6">
+      
       {/* 패널 타이틀 */}
-      <div className="text-sm font-bold mb-5">장소 리스트</div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-lg font-extrabold leading-8 text-gray-900">
+            코스 생성
+        </div>
+        <div className="flex space-x-2">
+            <button
+            type="button"
+            className="inline-flex items-center rounded-xl bg-main-200 px-3 py-1.5 
+                        text-white text-[13px] font-medium shadow-sm 
+                        hover:bg-main-300 focus:outline-none focus:ring-2 
+                        focus:ring-main-200/40"
+            >
+            입력 완료
+            </button>
+            <button
+            type="button"
+            className="inline-flex items-center rounded-xl bg-main-200 px-3 py-1.5 
+                        text-white text-[13px] font-medium shadow-sm 
+                        hover:bg-main-300 focus:outline-none focus:ring-2 
+                        focus:ring-main-200/40"
+            >
+            취소
+            </button>
+        </div>
+        </div>
 
-      {/* 선택된 장소 요약 (가로 리스트) */}
+      {/* 패널 타이틀 */}
+      <div className="text-[13px] font-bold leading-8">장소 리스트</div>
       <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-gray-900 mb-4">
         <li className="flex items-center gap-1.5">
           <div className="flex flex-col">
@@ -39,13 +65,10 @@ export default function CoursePlaceCreate() {
                 강릉길감자
                 </span>
             </div>
-            <span className="text-[12px] text-gray-400 self-end">문화제</span>
+            <span className="text-[12px] text-gray-400 self-end">문화재</span>
         </div>
         </li>
       </ul>
-
-      {/* 구분선 */}
-      <div className="h-px bg-gray-100 mb-4" />
 
       {/* 일정 요약 */}
       <div className="grid grid-cols-[auto_1fr]  gap-x-4 gap-y-2 items-start mb-4">
