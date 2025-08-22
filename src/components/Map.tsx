@@ -72,11 +72,39 @@
               new Tmapv3.InfoWindow({
                 position: new Tmapv3.LatLng(lat, lng),
                 content: `
-                  <div style="min-width:220px;padding:8px 10px;font-size:13px">
-                    <div style="font-weight:700;margin-bottom:4px">클릭한 위치</div>
-                    <div>위도: ${lat}</div>
-                    <div>경도: ${lng}</div>
-                  </div>
+                  <div style="position: static; display: flex; flex-direction: column; font-size: 14px;
+                  box-shadow: 5px 5px 5px #00000040; border-radius: 10px; width: 250px; background: #fff;">
+        <div class='img-box'
+             style="position: relative; width: 100%; height: 150px; border-radius: 10px 10px 0 0;
+                    background: #f5f5f5 url(resources/images/sample/img-skt.png) no-repeat center;">
+        </div>
+        <div class='info-box' style="padding: 10px;">
+          <p style="margin-bottom: 7px; overflow: hidden;">
+            <span class='tit' style="font-size: 16px; font-weight: bold;">티맵 모빌리티</span>
+            <a href='/' target='_blank' class='link'
+               style="color: #3D6DCC; font-size: 13px; float: right;">홈페이지</a>
+          </p>
+          <ul class='ul-info'>
+            <li class='li-addr'
+                style="padding-left: 20px; margin-bottom: 5px;
+                       background: url(resources/images/sample/ico-map.svg) no-repeat top 3px left;">
+              <p class='new-addr'>서울 중구 삼일대로 343 (우)04538</p>
+              <p class='old-addr' style="color: #707070;">(지번) 저동1가 114</p>
+            </li>
+            <li class='li-tell'
+                style="padding-left: 20px;
+                       background: url(resources/images/sample/ico-tell.svg) no-repeat top 4px left;">
+              <span class='tell'>1588-8787</span>
+            </li>
+          </ul>
+        </div>
+        <div>위도: ${lat}</div> 
+        <div>경도: ${lng}</div>
+        <a href='javascript:void(0)' onclick='onClose()' class='btn-close'
+           style="position: absolute; top: 10px; right: 10px; display: block; width: 15px; height: 15px;
+                  background: url(resources/images/sample/btn-close-w.svg) no-repeat center;">
+        </a>
+      </div>
                 `,
             type: 2,
             map: mapInstanceRef.current, // 혹은 effect 내부면 지역변수 map
