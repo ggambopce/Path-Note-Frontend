@@ -1,7 +1,22 @@
+interface MapPlaceInfoProps {
+  visible: boolean;
+  lat: number | null;
+  lng: number | null;
+  onClose: () => void;
+  onOpenCoursePanel?: () => void;
+}
+
 
 //          component: 맵 장소 정보 컴포넌트          //
-export default function MapPlaceInfo() {
-  
+export default function MapPlaceInfo({
+  visible,
+  lat,
+  lng,
+  onClose,
+  onOpenCoursePanel,
+}: MapPlaceInfoProps) {
+    if (!visible) return null;
+
     //          render: 맵 장소 정보 컴포넌트 랜더링          //
     return (
     <div className="relative">
@@ -53,6 +68,7 @@ export default function MapPlaceInfo() {
             <div className="mt-3 flex justify-center">
               <button
                 type="button"
+                onClick={() => onOpenCoursePanel?.({})}
                 className="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-main-200 hover:bg-blue-100 text-[12px] font-medium px-3 py-1.5 transition"
               >
                 코스에 추가하기

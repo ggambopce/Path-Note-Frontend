@@ -1,6 +1,10 @@
+interface CoursePlaceCreateProps {
+  onCancel: () => void;        // ← 부모에서 내려줄 콜백
+}
+
 //          component: 코스 장소 등록 컴포넌트          //
-export default function CoursePlaceCreate() {
-  
+export default function CoursePlaceCreate({ onCancel }: CoursePlaceCreateProps) {
+
     //          render: 코스 장소 등록 컴포넌트 랜더링          //
     return (
     <section className="rounded-3xl bg-white shadow-lg ring-1 ring-black/5 p-5 md:p-6">
@@ -22,6 +26,7 @@ export default function CoursePlaceCreate() {
             </button>
             <button
             type="button"
+            onClick={onCancel}
             className="inline-flex items-center rounded-xl bg-main-200 px-3 py-1.5 
                         text-white text-[13px] font-medium shadow-sm 
                         hover:bg-main-300 focus:outline-none focus:ring-2 
