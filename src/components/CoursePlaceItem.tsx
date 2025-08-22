@@ -1,17 +1,27 @@
+interface CoursePlaceItemProps {
+  id: number;
+  index: number;
+  name: string;
+  address: string;
+  phone?: string;
+  onRemove: (id: number) => void;
+}
+
 
 //          component: 코스 장소 아이템 컴포넌트          //
-export default function CoursePlaceItem() {
-  
+export default function CoursePlaceItem({ id, index, name, address, phone, onRemove }: CoursePlaceItemProps) {
+
     //          render: 코스 장소 아이템 컴포넌트 랜더링          //
     return (
     <div className="rounded-2xl bg-white shadow-md ring-1 ring-black/5 px-4 py-3">
       <div className="space-y-2">
         {/* 0) 순번 + 삭제 버튼 */}
         <div className="flex items-center justify-between">
-          <div className="text-[13px] font-bold text-gray-600">1</div>
+          <div className="text-[13px] font-bold text-gray-600">{index}</div>
           <button
             type="button"
             className="text-gray-400 hover:text-red-500 transition-colors"
+            onClick={() => onRemove(id)}
           >
             <svg
               aria-hidden

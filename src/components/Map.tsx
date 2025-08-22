@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import MapPlaceInfo from './MapPlaceInfo';
 import CoursePlaceItem from './CoursePlaceItem';
 import CoursePlaceCreate from './CoursePlaceCreate';
+import type { CoursePlaceType } from '../types/CoursePlaceType';
 
 interface MapProps {
   width: string;
   height: string;
 }
+
 
 interface PlaceListProps {
   places: {
@@ -35,6 +37,9 @@ const Map = ({
   const [infoLng, setInfoLng] = useState<number | null>(null);
   const [isCoursePanelOpen, setIsCoursePanelOpen] = useState(false);
   const [isCoursePlaceCreatePanelOpen, setIsCoursePlaceCreatePanelOpen] = useState(false);
+  const [coursePlaces, setCoursePlaces] = useState<CoursePlaceType[]>([]);
+  
+  const idRef = useRef(1);
 
   // 지도 초기화
   useEffect(() => {
@@ -88,8 +93,22 @@ const Map = ({
     };
   },[Tmapv3]);
 
+  //코스 패널 열기 핸들러
   const handleOpenCoursePanel = () => {
     setIsCoursePanelOpen(true);
+
+    const id = idRef.current++;
+    setCoursePlaces(prev => [
+      ...prev,
+      {
+        id,
+        name: `장소 ${id}`,
+        address: `주소 예시 ${id}`,
+        phone: `010-0000-00${String(id).padStart(2, '0')}`,
+        lat: infoLat ?? undefined,
+        lng: infoLng ?? undefined,
+      },
+    ]);
   };
 
   // 취소 시 호출될 핸들러
@@ -97,6 +116,11 @@ const Map = ({
     setIsCoursePlaceCreatePanelOpen(false);
   };
   
+  // 장소 삭제 핸들러
+  const handleRemovePlace = (id: number) => {
+    setCoursePlaces(prev => prev.filter(p => p.id !== id));
+  };
+
 
   //          render: 메인 맵 컴포넌트 랜더링          //
   return (
@@ -122,7 +146,10 @@ const Map = ({
       {/* 코스 작성 컴포넌트 */}
       {isCoursePlaceCreatePanelOpen && (
         <div className="absolute top-1/2 left-3/5 -translate-x-1/2 -translate-y-1/2">
-          <CoursePlaceCreate onCancel={handleCloseCoursePlaceCreate} />
+          <CoursePlaceCreate 
+            onCancel={handleCloseCoursePlaceCreate}
+            places={coursePlaces}
+           />
         </div>
       )}
 
@@ -155,7 +182,17 @@ const Map = ({
           {/* 스크롤 영역 */}
           <div className="mt-2 h-px w-full bg-black/5" />
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
-            <CoursePlaceItem />
+            {coursePlaces.map((p, idx) => (
+            <CoursePlaceItem
+              key={p.id}
+              id={p.id}
+              index={idx + 1}
+              name={p.name}
+              address={p.address}
+              phone={p.phone}
+              onRemove={handleRemovePlace}
+            />
+            ))}
           </div>
         </div>
       </aside>

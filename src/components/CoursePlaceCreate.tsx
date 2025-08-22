@@ -1,9 +1,13 @@
+import type { CoursePlaceType } from "../types/CoursePlaceType";
+
 interface CoursePlaceCreateProps {
-  onCancel: () => void;        // ← 부모에서 내려줄 콜백
+  onCancel: () => void;
+  places: CoursePlaceType[];
 }
 
 //          component: 코스 장소 등록 컴포넌트          //
-export default function CoursePlaceCreate({ onCancel }: CoursePlaceCreateProps) {
+export default function CoursePlaceCreate({ onCancel, places, }: CoursePlaceCreateProps) {
+    const count = places.length;
 
     //          render: 코스 장소 등록 컴포넌트 랜더링          //
     return (
@@ -40,39 +44,24 @@ export default function CoursePlaceCreate({ onCancel }: CoursePlaceCreateProps) 
       {/* 패널 타이틀 */}
       <div className="text-[13px] font-bold leading-8">장소 리스트</div>
       <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-gray-900 mb-4">
-        <li className="flex items-center gap-1.5">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1">
-                <span className="font-semibold text-[14px]">1.</span>
-                <span className="text-[14px] text-gray-900 truncate max-w-[12rem]">
-                대전대학교
-                </span>
-            </div>
-            <span className="text-[12px] text-gray-400 self-end">대학교</span>
-        </div>
-        </li>
-        <li className="flex items-center gap-1.5">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1">
-                <span className="font-semibold text-[14px]">2.</span>
-                <span className="text-[14px] text-gray-900 truncate max-w-[12rem]">
-                성심당
-                </span>
-            </div>
-            <span className="text-[12px] text-gray-400 self-end">빵집</span>
-        </div>
-        </li>
-        <li className="flex items-center gap-1.5">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1">
-                <span className="font-semibold text-[14px]">3.</span>
-                <span className="text-[14px] text-gray-900 truncate max-w-[12rem]">
-                강릉길감자
-                </span>
-            </div>
-            <span className="text-[12px] text-gray-400 self-end">문화재</span>
-        </div>
-        </li>
+        {places.length === 0 ? (
+          <li className="text-[12px] text-gray-400">선택된 장소가 없음</li>
+        ) : (
+          places.map((p, idx) => (
+            <li key={p.id} className="flex items-center gap-1.5">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-[14px]">{idx + 1}.</span>
+                  <span className="text-[14px] text-gray-900 truncate max-w-[12rem]">
+                    {p.name}
+                  </span>
+                </div>
+                {/* 서브라벨이 필요하면 카테고리/태그를 붙이고, 지금은 더미 */}
+                <span className="text-[12px] text-gray-400 self-end">카테고리</span>
+              </div>
+            </li>
+          ))
+        )}
       </ul>
 
       {/* 일정 요약 */}
