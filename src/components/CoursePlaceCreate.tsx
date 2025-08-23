@@ -1,13 +1,40 @@
+import { useState } from "react";
 import type { CoursePlaceType } from "../types/CoursePlaceType";
+
+// 서버에 보낼 페이로드 타입
+export type CourseCreatePayload = {
+  course_name: string;
+  course_category: string;
+  course_description: string;
+};
+
 
 interface CoursePlaceCreateProps {
   onCancel: () => void;
   places: CoursePlaceType[];
+  onSubmit: (payload: CourseCreatePayload) => void;
 }
 
 //          component: 코스 장소 등록 컴포넌트          //
-export default function CoursePlaceCreate({ onCancel, places, }: CoursePlaceCreateProps) {
-    const count = places.length;
+export default function CoursePlaceCreate({  onCancel, places, onSubmit,}: CoursePlaceCreateProps) {
+
+  //          states: 폼 데이터 상태          //
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    const payload: CourseCreatePayload = {
+      course_name: name.trim(),
+      course_category: category.trim(),
+      course_description: description.trim(),
+    };
+    
+    onSubmit(payload);
+  };
 
     //          render: 코스 장소 등록 컴포넌트 랜더링          //
     return (
@@ -21,6 +48,8 @@ export default function CoursePlaceCreate({ onCancel, places, }: CoursePlaceCrea
         <div className="flex space-x-2">
             <button
             type="button"
+            onClick={handleSubmit}
+            disabled={!name.trim() || !category.trim()}
             className="inline-flex items-center rounded-xl bg-main-200 px-3 py-1.5 
                         text-white text-[13px] font-medium shadow-sm 
                         hover:bg-main-300 focus:outline-none focus:ring-2 
@@ -76,24 +105,27 @@ export default function CoursePlaceCreate({ onCancel, places, }: CoursePlaceCrea
 
       {/* 코스 이름 */}
       <div className="grid grid-cols-[auto_1fr]  font-bold  gap-x-4 gap-y-2 items-start mb-3">
-        <label className="text-[13px] leading-9">코스 이름</label>
-        <div className="w-full">
-          <div
-            aria-hidden
-            className="h-9 rounded-xl bg-main-100"
-          />
-        </div>
+        <label htmlFor="course-name" className="text-[13px] leading-9">코스 이름</label>
+        
+        <input
+          id="course-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="예) 빵길"
+          className="h-9 w-full rounded-xl bg-main-100 px-3 text-[14px] outline-none focus:ring-2 focus:ring-main-200/50"
+        />
       </div>
 
       {/* 코스 테마 해시 태그 */}
       <div className="grid grid-cols-[auto_1fr] font-bold gap-x-4 gap-y-2 items-start mb-3">
-        <label className="text-[13px] leading-9">코스 테마 해시 태그</label>
-        <div className="w-full">
-          <div
-            aria-hidden
-            className="h-9 rounded-xl bg-main-100"
-          />
-        </div>
+        <label htmlFor="course-category" className="text-[13px] leading-9">코스 테마 해시 태그</label>
+        <input
+          id="course-category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="예) 맛집투어"
+          className="h-9 w-full rounded-xl bg-main-100 px-3 text-[14px] outline-none focus:ring-2 focus:ring-main-200/50"
+        />
       </div>
 
       {/* 이미지 업로드 */}
@@ -108,13 +140,14 @@ export default function CoursePlaceCreate({ onCancel, places, }: CoursePlaceCrea
 
       {/* 코스 설명 */}
       <div className="grid grid-cols-[auto_1fr] font-bold  gap-x-4 gap-y-2 items-start">
-        <label className="text-[13px] leading-10">코스 설명</label>
-        <div className="w-full">
-          <div
-            aria-hidden
-            className="h-40 md:h-48 rounded-2xl bg-main-100"
-          />
-        </div>
+        <label htmlFor="course-desc" className="text-[13px] leading-10">코스 설명</label>
+        <textarea
+          id="course-desc"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="예) 성심당에 대전이 있지"
+          className="w-full h-40 md:h-48 rounded-2xl bg-main-100 px-3 py-2 text-[14px] outline-none resize-none focus:ring-2 focus:ring-main-200/50"
+        />
       </div>
     </section>
   );

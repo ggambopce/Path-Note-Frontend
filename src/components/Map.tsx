@@ -3,7 +3,6 @@
   import CoursePlaceItem from './CoursePlaceItem';
   import CoursePlaceCreate from './CoursePlaceCreate';
   import type { CoursePlaceType } from '../types/CoursePlaceType';
-  import { createRoot } from 'react-dom/client';
 
   interface MapProps {
     width: string;
@@ -11,18 +10,6 @@
   }
 
 
-  interface PlaceListProps {
-    places: {
-      id: number;
-      name: string;
-      address: string;
-      phone: string;
-      lat: number;
-      lng: number;
-    }[];
-    onClose: () => void;
-    onOpenCoursePlacePanel?: () => void;
-  }
 
   const Map = ({
     width = '100%',
@@ -32,8 +19,6 @@
     const mapInstanceRef = useRef<any>(null);
     const {Tmapv3} = window;
 
-    const infoWindowRef = useRef<any>(null);
-    const popupRootRef = useRef<ReturnType<typeof createRoot> | null>(null);
   
     const [infoVisible, setInfoVisible] = useState(true);
     const [infoLat, setInfoLat] = useState<number | null>(null);
