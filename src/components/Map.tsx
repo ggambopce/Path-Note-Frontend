@@ -3,6 +3,8 @@ import MapPlaceInfo from './MapPlaceInfo';
 import CoursePlaceItem from './CoursePlaceItem';
 import CoursePlaceCreate from './CoursePlaceCreate';
 import type { CoursePlaceType } from '../types/CoursePlaceType';
+import { useSearchStore } from '../stores/SearchStores';
+
 
 type Poi = {
   id: string;
@@ -77,6 +79,7 @@ const Map = ({
 }: MapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const markerRef = useRef<any>(null);
   const { Tmapv3 } = window as any;
 
   const [infoVisible, setInfoVisible] = useState(true);
@@ -86,8 +89,9 @@ const Map = ({
   const [isCoursePlaceCreatePanelOpen, setIsCoursePlaceCreatePanelOpen] = useState(false);
   const [coursePlaces, setCoursePlaces] = useState<CoursePlaceType[]>([]);
 
+  const selectedPOI = useSearchStore(s => s.selectedPOI);
   const idRef = useRef(1);
-
+  
   // 지도 초기화
   useEffect(() => {
     if (!Tmapv3 || mapInstanceRef.current) return;
@@ -104,7 +108,6 @@ const Map = ({
         const map = new Tmapv3.Map('map_div', mapOptions);
         mapInstanceRef.current = map;
 
-        const AROUND_CATEGORIES = '빵집;카페;음식점;편의점';
         const AROUND_RADIUS = 50;
 
         // 클릭 → 좌표 → 주변 1건 조회 → 콘솔 출력
@@ -130,7 +133,7 @@ const Map = ({
               return;
             }
 
-            console.log('[STEP2] nearest POI fetched in', took, 'ms');
+            console.log(' 클릭시 반경 1km 가장 가까운 장소 객체 정보 수집', took, 'ms');
             console.table({
               id: poi.id,
               name: poi.name,
@@ -157,6 +160,10 @@ const Map = ({
     initializeMap();
 
     return () => {
+      if (markerRef.current) {
+        markerRef.current.setMap(null);
+        markerRef.current = null;
+      }
       if (mapInstanceRef.current) {
         mapInstanceRef.current.destroy();
         mapInstanceRef.current = null;
@@ -164,6 +171,37 @@ const Map = ({
     };
   }, [Tmapv3, width, height]);
 
+  //          effect: 선택된 POI가 바뀌면 지도 이동 + 줌 + 마커 갱신 + 콘솔          //
+  useEffect(() => {
+    if (!Tmapv3 || !mapInstanceRef.current || !selectedPOI) return;
+
+    const map = mapInstanceRef.current;
+    const pos = new Tmapv3.LatLng(selectedPOI.lat, selectedPOI.lng);
+
+    // 중심 이동 & 적당한 줌
+    map.setCenter(pos);
+    if (typeof map.setZoom === 'function') map.setZoom(17);
+
+    // 마커 없으면 생성, 있으면 위치만 갱신
+    if (!markerRef.current) {
+      markerRef.current = new Tmapv3.Marker({
+        position: pos,
+        map,
+        title: selectedPOI.name,
+      });
+    } else {
+      markerRef.current.setPosition(pos);
+      markerRef.current.setMap(map);
+    }
+
+    console.log('[MAP] 선택된 장소로 이동 & 마커 표시', {
+      id: selectedPOI.id,
+      name: selectedPOI.name,
+      address: selectedPOI.address,
+      lat: selectedPOI.lat,
+      lng: selectedPOI.lng,
+    });
+  }, [selectedPOI, Tmapv3]);
   // 코스 패널 열기
   const handleOpenCoursePanel = () => {
     setIsCoursePanelOpen(true);
@@ -198,7 +236,7 @@ const Map = ({
       <div
         id="map_div"
         ref={mapRef}
-        style={{ width: '100%', height: '400px' }}
+        style={{ width, height }}
         className="w-full h-full"
       />
 

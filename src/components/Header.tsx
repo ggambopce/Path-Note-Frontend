@@ -17,19 +17,28 @@ const Header = () => {
   } = useSearchStore();
 
   const handleSearch = async () => {
-    if (!keyword.trim()) return;
+    const kw = keyword.trim();
+  if (!kw) return;
 
-    setIsSearching(true);
-    try {
-      const results = await searchPOI(sortType, keyword, center, 10);
-      setSearchResults(results);
-      setIsResultsVisible(true);
-    } catch (error) {
-      console.error('검색 실패:', error);
-      alert('검색 중 오류가 발생했습니다.');
-    } finally {
-      setIsSearching(false);
-    }
+  setIsSearching(true);
+  try {
+    const results = await searchPOI(
+      sortType,
+      kw,
+      sortType === 'R' ? center : undefined,  // R일 때만 중심좌표 사용
+      10,
+      sortType === 'R' ? 1 : 0                // R: 1km, A: 의미 없음
+    );
+
+    setSearchResults(results);   // []도 그대로 저장
+    setIsResultsVisible(true);   // 0건이면 "결과 없음" UI 처리 권장
+  } catch (error) {
+    console.error('검색 실패:', error);
+    // 여기서만 진짜 에러(4xx/5xx) 안내
+    alert('요청 처리 중 오류가 발생했어.');
+  } finally {
+    setIsSearching(false);
+  }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -108,7 +117,7 @@ const Header = () => {
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
               <button className="ml-3 bg-main-100 hover:bg-main-200 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
-                회원가입
+                카카오로그인
               </button>
             </div>
           </div>

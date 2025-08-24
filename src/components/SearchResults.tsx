@@ -1,5 +1,6 @@
 import { useSearchStore } from "../stores/SearchStores";
 import type { POIResult } from "../stores/SearchStores";
+import { useMapStore } from "../stores/MapStores";
 
 const SearchResults = () => {
   const { 
@@ -9,8 +10,14 @@ const SearchResults = () => {
     setIsResultsVisible 
   } = useSearchStore();
 
+  const { moveToLocation } = useMapStore();
+
   const handlePOIClick = (poi: POIResult) => {
     setSelectedPOI(poi);
+    moveToLocation(poi.lat, poi.lng);
+
+    console.log('[RESULT CLICK]', poi);
+
     setIsResultsVisible(false);
   };
 
