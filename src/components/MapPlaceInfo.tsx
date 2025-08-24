@@ -2,6 +2,10 @@ interface MapPlaceInfoProps {
   visible: boolean;
   lat: number | null;
   lng: number | null;
+  poi?: {
+    name?: string;
+    address?: string;
+  } | null;
   onClose: () => void;
   onOpenCoursePanel?: () => void;
 }
@@ -12,10 +16,14 @@ export default function MapPlaceInfo({
   visible,
   lat,
   lng,
+  poi,
   onClose,
   onOpenCoursePanel,
 }: MapPlaceInfoProps) {
     if (!visible) return null;
+
+    const title   = poi?.name;
+    const addr    = poi?.address;
 
     //          render: 맵 장소 정보 컴포넌트 랜더링          //
     return (
@@ -27,7 +35,7 @@ export default function MapPlaceInfo({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <h3 className="text-[15px] font-extrabold text-gray-900 truncate">
-                대전대학교
+                {title}
               </h3>
               {/* 태그/배지 */}
               <span className="ml-2 shrink-0 rounded-full bg-main-100 text-gray-600 text-[11px] px-2 py-0.5 border border-gray-200">
@@ -36,19 +44,19 @@ export default function MapPlaceInfo({
             </div>
 
             {/* 주소 라인 */}
-            <div className="mt-1 flex items-start gap-2 text-gray-800">
-              <span className="mt-0.5 text-gray-500">
-                <svg viewBox="0 0 24 24" className="w-4 h-4">
-                  <path
-                    d="M12 2a6 6 0 0 0-6 6c0 4.2 6 12 6 12s6-7.8 6-12a6 6 0 0 0-6-6zm0 8.2A2.2 2.2 0 1 1 12 6a2.2 2.2 0 0 1 0 4.2z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </span>
-              <span className="text-[14px] leading-5 break-keep">
-                대전 동구 용운동 123-45
-              </span>
-            </div>
+            {addr && (
+              <div className="mt-1 flex items-start gap-2 text-gray-800">
+                <span className="mt-0.5 text-gray-500">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4">
+                    <path
+                      d="M12 2a6 6 0 0 0-6 6c0 4.2 6 12 6 12s6-7.8 6-12a6 6 0 0 0-6-6zm0 8.2A2.2 2.2 0 1 1 12 6a2.2 2.2 0 0 1 0 4.2z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span className="text-[14px] leading-5 break-keep">{addr}</span>
+              </div>
+            )}
 
             {/* 전화 라인 */}
             <div className="mt-1 flex items-center gap-2 text-gray-800">

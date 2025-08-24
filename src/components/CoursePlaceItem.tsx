@@ -50,9 +50,7 @@ export default function CoursePlaceItem({ id, index, name, address, phone, onRem
           </svg>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="text-[15px] font-semibold text-gray-900 truncate">성심당</h3>
-            </div>
+            <h3 className="text-[15px] font-semibold text-gray-900 truncate">{name}</h3>
           </div>
         </div>
 
@@ -64,9 +62,7 @@ export default function CoursePlaceItem({ id, index, name, address, phone, onRem
               fill="currentColor"
             />
           </svg>
-          <div className="text-[13px] text-gray-700 leading-5 break-keep">
-            대전 중구 새문안로5길 00
-          </div>
+          <div className="text-[13px] text-gray-700 leading-5 break-keep">{address}</div>
         </div>
 
         {/* 3) 카테고리 행: 태그 아이콘 + 세부 카테고리 */}

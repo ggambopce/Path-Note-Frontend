@@ -204,6 +204,10 @@ const Map = ({
   }, [selectedPOI, Tmapv3]);
   // 코스 패널 열기
   const handleOpenCoursePanel = () => {
+    if (!selectedPOI) {
+    console.warn('[COURSE] 선택된 검색 결과가 없습니다.');
+    return; // null 가드로 타입 좁히기
+  }
     setIsCoursePanelOpen(true);
 
     const id = idRef.current++;
@@ -211,11 +215,11 @@ const Map = ({
       ...prev,
       {
         id,
-        name: `장소 ${id}`,
-        address: `주소 예시 ${id}`,
+        name: selectedPOI.name,
+        address: selectedPOI.address,
         phone: `010-0000-00${String(id).padStart(2, '0')}`,
-        lat: infoLat ?? undefined,
-        lng: infoLng ?? undefined,
+        lat: selectedPOI.lat,
+        lng: selectedPOI.lng,
       },
     ]);
   };
@@ -246,6 +250,10 @@ const Map = ({
           visible={infoVisible}
           lat={infoLat}
           lng={infoLng}
+          poi={selectedPOI ? {
+          name: selectedPOI.name,
+          address: selectedPOI.address,
+          } : null}
           onClose={() => setInfoVisible(false)}
           onOpenCoursePanel={handleOpenCoursePanel}
         />
