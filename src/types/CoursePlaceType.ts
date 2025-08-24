@@ -5,4 +5,6 @@ export interface CoursePlaceType {
   phone: string;
   lat?: number;
   lng?: number;
+  arrivalTime?: string;
+  departureTime?: string; 
 }

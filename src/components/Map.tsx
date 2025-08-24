@@ -220,8 +220,20 @@ const Map = ({
         phone: `010-0000-00${String(id).padStart(2, '0')}`,
         lat: selectedPOI.lat,
         lng: selectedPOI.lng,
+        arrivalTime: '',
+        departureTime: '',
       },
     ]);
+  };
+  // 시간 변경 핸들러
+  const handlePlaceTimeChange = (
+    id: number,
+    t: { arrivalTime?: string; departureTime?: string }
+  ) => {
+    setCoursePlaces(prev =>
+      prev.map(p => (p.id === id ? { ...p, ...t } : p))
+    );
+    console.log('[COURSE] time changed:', id, t);
   };
 
   // 코스 생성 취소
@@ -234,7 +246,8 @@ const Map = ({
     setCoursePlaces((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // render
+
+  //          render: 메인 맵 랜더링          //
   return (
     <div>
       <div
@@ -298,6 +311,9 @@ const Map = ({
                   name={p.name}
                   address={p.address}
                   phone={p.phone}
+                  arrivalTime={p.arrivalTime}
+                  departureTime={p.departureTime}
+                  onTimeChange={handlePlaceTimeChange}
                   onRemove={handleRemovePlace}
                 />
               ))}

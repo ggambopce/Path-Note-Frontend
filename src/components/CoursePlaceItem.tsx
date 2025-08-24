@@ -4,12 +4,15 @@ interface CoursePlaceItemProps {
   name: string;
   address: string;
   phone?: string;
+  arrivalTime?: string;
+  departureTime?: string;
   onRemove: (id: number) => void;
+  onTimeChange?: (id: number, t: { arrivalTime?: string; departureTime?: string }) => void;
 }
 
 
 //          component: 코스 장소 아이템 컴포넌트          //
-export default function CoursePlaceItem({ id, index, name, address, phone, onRemove }: CoursePlaceItemProps) {
+export default function CoursePlaceItem({ id, index, name, address, phone, arrivalTime, departureTime, onRemove, onTimeChange, }: CoursePlaceItemProps) {
 
     //          render: 코스 장소 아이템 컴포넌트 랜더링          //
     return (
@@ -78,18 +81,26 @@ export default function CoursePlaceItem({ id, index, name, address, phone, onRem
         </div>
 
         {/* 4) 시간 영역: 아이콘 열 폭만큼 들여쓰기 */}
-        <div className="mt-2 space-y-1.5">
-          {/* 도착 */}
-          <div className="flex items-center gap-2">
-            <span className="shrink-0 text-[12px] text-gray-600">도착</span>
-            <div aria-hidden className="w-1/3 md:h-4 rounded-2xl bg-main-100" />
-          </div>
-          {/* 출발 */}
-          <div className="flex items-center gap-2">
-            <span className="shrink-0 text-[12px] text-gray-600">출발</span>
-            <div aria-hidden className="w-1/3 md:h-4 rounded-2xl bg-main-100" />
-          </div>
+        <div className="mt-2 space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 text-[12px] text-gray-600">도착</span>
+          <input
+            type="time"
+            value={arrivalTime ?? ''}
+            onChange={(e) => onTimeChange?.(id, { arrivalTime: e.target.value })}
+            className="w-32 rounded-full border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 text-[12px] text-gray-600">출발</span>
+          <input
+            type="time"
+            value={departureTime ?? ''}
+            onChange={(e) => onTimeChange?.(id, { departureTime: e.target.value })}    
+            className="w-32 rounded-full border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
       </div>
     </div>
   );
