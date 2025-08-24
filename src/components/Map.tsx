@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import MapPlaceInfo from './MapPlaceInfo';
 import CoursePlaceItem from './CoursePlaceItem';
-import CoursePlaceCreate from './CoursePlaceCreate';
+import CoursePlaceCreate, { type CourseCreatePayload } from './CoursePlaceCreate';
 import type { CoursePlaceType } from '../types/CoursePlaceType';
 import { useSearchStore } from '../stores/SearchStores';
+import { createCourse } from '../apis/CreateCoursePlaceApi';
+import { buildCourseCreateRequest } from '../utils/buildCourseCreateRequest';
+import type { CourseCreateRequestDto } from '../types/CoursePlaceDto';
 
+const accessToken = "<JWT토큰>"; 
+const userId = "1";
 
 type Poi = {
   id: string;
@@ -246,6 +251,11 @@ const Map = ({
     setCoursePlaces((prev) => prev.filter((p) => p.id !== id));
   };
 
+  //          event handler: 코스 최종 등록 이벤트 핸들러          //
+  const handleSubmitCourse = async (payload: CourseCreatePayload) => {
+  const req = buildCourseCreateRequest(userId, payload, coursePlaces);
+  const res = await createCourse(req, accessToken);
+};
 
   //          render: 메인 맵 랜더링          //
   return (
@@ -275,7 +285,7 @@ const Map = ({
       {/* 코스 작성 */}
       {isCoursePlaceCreatePanelOpen && (
         <div className="absolute top-1/2 left-3/5 -translate-x-1/2 -translate-y-1/2">
-          <CoursePlaceCreate onCancel={handleCloseCoursePlaceCreate} places={coursePlaces} />
+          <CoursePlaceCreate onCancel={handleCloseCoursePlaceCreate} places={coursePlaces} onSubmit={handleSubmitCourse} />
         </div>
       )}
 

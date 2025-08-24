@@ -23,7 +23,7 @@ export default function CoursePlaceCreate({  onCancel, places, onSubmit,}: Cours
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   
-  
+  //          event handler: 장소 등록 이벤트 핸들러          //
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   

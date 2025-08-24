@@ -3,6 +3,7 @@ export interface CoursePlaceType {
   name: string;
   address: string;
   phone: string;
+  category?: string;
   lat?: number;
   lng?: number;
   arrivalTime?: string;
