@@ -1,9 +1,9 @@
 import axios from 'axios';
-import type {CourseCreateRequestDto} from "../types/CoursePlaceDto";
+import type {CourseCreateRequestDto} from "../types/CreateCoursePlaceDto";
 
 const API_BASE_URL = "http://localhost:8080"; // 실제 서버 주소로 교체
 
-export const createCourse = async (requestBody: CourseCreateRequestDto, accessToken: string) => {
+export const createCourse = async (requestBody: CourseCreateRequestDto) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/api/courses`,   // 실제 엔드포인트에 맞게 수정
@@ -11,7 +11,6 @@ export const createCourse = async (requestBody: CourseCreateRequestDto, accessTo
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // JWT 토큰 사용 시
         },
       }
     );

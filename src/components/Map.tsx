@@ -7,8 +7,7 @@ import { useSearchStore } from '../stores/SearchStores';
 import { createCourse } from '../apis/CreateCoursePlaceApi';
 import { buildCourseCreateRequest } from '../utils/BuildCourseCreateRequest';
 
-const accessToken = "<JWT토큰>"; 
-const userId = "1";
+const userId = 1;
 
 type Poi = {
   id: string;
@@ -220,6 +219,7 @@ const Map = ({
       ...prev,
       {
         id,
+        poiId: Number(selectedPOI.id),
         name: selectedPOI.name,
         address: selectedPOI.address,
         phone: `010-0000-00${String(id).padStart(2, '0')}`,
@@ -254,7 +254,7 @@ const Map = ({
   //          event handler: 코스 최종 등록 이벤트 핸들러          //
   const handleSubmitCourse = async (payload: CourseCreatePayload) => {
   const req = buildCourseCreateRequest(userId, payload, coursePlaces);
-  const res = await createCourse(req, accessToken);
+  const res = await createCourse(req);
 };
 
   //          render: 메인 맵 랜더링          //
