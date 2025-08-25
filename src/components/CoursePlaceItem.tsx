@@ -88,7 +88,7 @@ export default function CoursePlaceItem({ id, index, name, address, phone, arriv
             type="time"
             value={arrivalTime ?? ''}
             onChange={(e) => onTimeChange?.(id, { arrivalTime: e.target.value })}
-            className="w-32 rounded-full border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-32 rounded-full border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:bg-main-100"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export default function CoursePlaceItem({ id, index, name, address, phone, arriv
             type="time"
             value={departureTime ?? ''}
             onChange={(e) => onTimeChange?.(id, { departureTime: e.target.value })}    
-            className="w-32 rounded-full border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-32 rounded-full border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:bg-main-100"
           />
         </div>
       </div>

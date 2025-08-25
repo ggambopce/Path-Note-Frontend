@@ -4,6 +4,7 @@ import { useSearchStore } from '../stores/SearchStores';
 import SearchResults from './SearchResults';
 import { useMapStore } from '../stores/MapStores';
 
+//          component: 헤더 컴포넌트          //
 const Header = () => {
   const [sortType, setSortType] = useState<'A' | 'R'>('A'); // A: 정확도순, R: 거리순
   const { center } = useMapStore();
@@ -16,29 +17,30 @@ const Header = () => {
     setIsResultsVisible 
   } = useSearchStore();
 
+  //            event handler: 장소 검색 이벤트 핸들러          //
   const handleSearch = async () => {
     const kw = keyword.trim();
-  if (!kw) return;
+    if (!kw) return;
 
-  setIsSearching(true);
-  try {
-    const results = await searchPOI(
-      sortType,
-      kw,
-      sortType === 'R' ? center : undefined,  // R일 때만 중심좌표 사용
-      10,
-      sortType === 'R' ? 1 : 0                // R: 1km, A: 의미 없음
-    );
+    setIsSearching(true);
+    try {
+      const results = await searchPOI(
+        sortType,
+        kw,
+        sortType === 'R' ? center : undefined,  // R일 때만 중심좌표 사용
+        10,
+        sortType === 'R' ? 1 : 0                // R: 1km, A: 의미 없음
+      );
 
-    setSearchResults(results);   // []도 그대로 저장
-    setIsResultsVisible(true);   // 0건이면 "결과 없음" UI 처리 권장
-  } catch (error) {
-    console.error('검색 실패:', error);
-    // 여기서만 진짜 에러(4xx/5xx) 안내
-    alert('요청 처리 중 오류가 발생했어.');
-  } finally {
-    setIsSearching(false);
-  }
+      setSearchResults(results);   // []도 그대로 저장
+      setIsResultsVisible(true);   // 0건이면 "결과 없음" UI 처리 권장
+    } catch (error) {
+      console.error('검색 실패:', error);
+      // 여기서만 진짜 에러(4xx/5xx) 안내
+      alert('요청 처리 중 오류가 발생했어.');
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -47,6 +49,7 @@ const Header = () => {
     }
   };
 
+  //          render:헤더 컴포넌트 랜더링          //
   return (
     <>
       <header className="fixed rounded-full max-h-16 top-3 left-1 right-1 z-150 backdrop-blur-xs bg-white/45 shadow-sm hover:shadow-lg border-b border-gray-200 transition-all hover:bg-white/85">
@@ -125,7 +128,7 @@ const Header = () => {
       </div>
       </header>
       
-      {/* 검색 결과 */}
+      {/* 검색 결과 컴포넌트 */}
       <SearchResults />
     </>
   );

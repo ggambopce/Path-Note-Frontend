@@ -5,15 +5,14 @@ import CoursePlaceCreate, { type CourseCreatePayload } from './CoursePlaceCreate
 import type { CoursePlaceType } from '../types/CoursePlaceType';
 import { useSearchStore } from '../stores/SearchStores';
 import { createCourse } from '../apis/CreateCoursePlaceApi';
-import { buildCourseCreateRequest } from '../utils/buildCourseCreateRequest';
-import type { CourseCreateRequestDto } from '../types/CoursePlaceDto';
+import { buildCourseCreateRequest } from '../utils/BuildCourseCreateRequest';
 
 const accessToken = "<JWT토큰>"; 
 const userId = "1";
 
 type Poi = {
   id: string;
-  name: string;
+  name: string;             
   category?: string;
   tel?: string;
   address?: string;
@@ -97,7 +96,7 @@ const Map = ({
   const selectedPOI = useSearchStore(s => s.selectedPOI);
   const idRef = useRef(1);
   
-  // 지도 초기화
+  //          effect: 지도 초기화          //
   useEffect(() => {
     if (!Tmapv3 || mapInstanceRef.current) return;
 
@@ -115,7 +114,7 @@ const Map = ({
 
         const AROUND_RADIUS = 50;
 
-        // 클릭 → 좌표 → 주변 1건 조회 → 콘솔 출력
+        //          event handler: 클릭 → 좌표 → 주변 1건 조회 → 콘솔 출력 이벤트 핸들러          //
         const handleClick = async () => {
           const ll = map.getCenter();
           const lat = typeof ll?.lat === 'function' ? ll.lat() : ll?.lat ?? ll?._lat;
@@ -207,7 +206,8 @@ const Map = ({
       lng: selectedPOI.lng,
     });
   }, [selectedPOI, Tmapv3]);
-  // 코스 패널 열기
+
+  //          event handler: 최종 코스 작성 패널 열기          //
   const handleOpenCoursePanel = () => {
     if (!selectedPOI) {
     console.warn('[COURSE] 선택된 검색 결과가 없습니다.');
@@ -230,7 +230,7 @@ const Map = ({
       },
     ]);
   };
-  // 시간 변경 핸들러
+  //          event handler: 시간 변경 핸들러          //
   const handlePlaceTimeChange = (
     id: number,
     t: { arrivalTime?: string; departureTime?: string }
@@ -241,12 +241,12 @@ const Map = ({
     console.log('[COURSE] time changed:', id, t);
   };
 
-  // 코스 생성 취소
+  //          event handler: 코스 작성 패널 닫기 핸들러          //
   const handleCloseCoursePlaceCreate = () => {
     setIsCoursePlaceCreatePanelOpen(false);
   };
 
-  // 장소 삭제
+  //          event handler: 장소 취소 핸들러          //
   const handleRemovePlace = (id: number) => {
     setCoursePlaces((prev) => prev.filter((p) => p.id !== id));
   };

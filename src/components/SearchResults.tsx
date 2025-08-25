@@ -2,6 +2,7 @@ import { useSearchStore } from "../stores/SearchStores";
 import type { POIResult } from "../stores/SearchStores";
 import { useMapStore } from "../stores/MapStores";
 
+//          component: 검색 결과 컴포넌트          //
 const SearchResults = () => {
   const { 
     searchResults, 
@@ -12,6 +13,7 @@ const SearchResults = () => {
 
   const { moveToLocation } = useMapStore();
 
+  //          event handler: 검색 결과 장소 클릭시 이벤트 핸들러          //
   const handlePOIClick = (poi: POIResult) => {
     setSelectedPOI(poi);
     moveToLocation(poi.lat, poi.lng);
@@ -21,6 +23,7 @@ const SearchResults = () => {
     setIsResultsVisible(false);
   };
 
+  //          event handler: 검색 결과 창 외부 클릭시 이벤트 핸들러          //
   const handleOverlayClick = () => {
     setIsResultsVisible(false);
   };
@@ -29,6 +32,7 @@ const SearchResults = () => {
     return null;
   }
 
+  //          render: 검색 결과 컴포넌트 랜더링          //
   return (
     <div className="fixed inset-0 z-40" onClick={handleOverlayClick}>
       <div className="fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 z-50">

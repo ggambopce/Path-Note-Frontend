@@ -14,7 +14,7 @@ const api = axios.create({
 
 const clampRadiusKm = (r: number) => (r === 0 ? 0 : Math.min(33, Math.max(1, Math.floor(r))));
 
-// T map → 우리 앱 타입으로 변환
+//          function: T map → 우리 앱 타입으로 변환          //
 function toPOIResult(poi: any): POIResult {
   const addr =
     poi?.newAddressList?.newAddress?.[0]?.fullAddressRoad ??
