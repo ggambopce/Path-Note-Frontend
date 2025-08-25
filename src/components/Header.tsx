@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { searchPOI } from '../services/PoiServices';
 import { useSearchStore } from '../stores/SearchStores';
 import SearchResults from './SearchResults';
 import { useMapStore } from '../stores/MapStores';
+import { KAKAO_LOG_IN_URL, getSignInUserRequest } from '../apis/GetUserInfoApi';
+import useLoginUserStore from '../stores/LoginUserStores';
 
 //          component: 헤더 컴포넌트          //
 const Header = () => {
   const [sortType, setSortType] = useState<'A' | 'R'>('A'); // A: 정확도순, R: 거리순
   const { center } = useMapStore();
+  const { setLoginUser, resetLoginUser, loginUser } = useLoginUserStore();
   const { 
     keyword, 
     isSearching, 
@@ -17,7 +20,56 @@ const Header = () => {
     setIsResultsVisible 
   } = useSearchStore();
 
-  //            event handler: 장소 검색 이벤트 핸들러          //
+  //          effect: 토큰 로컬스토리지 저장  사용자 정보 저장          //
+  useEffect(() => {
+    (async () => {
+      // 1) URL 쿼리에서 accessToken 회수
+      const url = new URL(window.location.href);
+      const tokenFromQuery = url.searchParams.get("accessToken");
+
+      if (tokenFromQuery) {
+        // 1-1) 저장
+        localStorage.setItem("accessToken", tokenFromQuery);
+        // 1-2) 주소창에서 토큰 제거(보안/UX)
+        url.searchParams.delete("accessToken");
+        url.searchParams.delete("refreshToken"); // 넘어왔다면 같이 제거
+        window.history.replaceState({}, "", url.pathname + url.search);
+      }
+
+      // 2) 최종 사용할 토큰 결정: 쿼리 > localStorage
+      const token = tokenFromQuery ?? localStorage.getItem("accessToken");
+      if (!token) return;
+
+      // 3) /me 호출 → 스토어 저장
+      try {
+        const me = await getSignInUserRequest(token);
+        setLoginUser(me);
+        console.log("[AUTH] /me ok:", me);
+      } catch (e) {
+        console.error("[AUTH] /me failed:", e);
+        // 토큰이 만료/위조면 정리
+        localStorage.removeItem("accessToken");
+        resetLoginUser();
+      }
+    })();
+  }, [setLoginUser, resetLoginUser]);
+
+  //          event handler: 카카로 로그인 버튼 클릭시 이벤트 핸들러          //
+  const onKakaoLoginButtonClickHandler = () => {
+    window.location.href = KAKAO_LOG_IN_URL();
+  };
+
+  //          event handler: 카카오 로그아웃 버튼 클릭시 이벤트 핸들러          //
+  const onLogoutButtonClickHandler = () => {
+    localStorage.removeItem("accessToken");
+    resetLoginUser();
+    // 필요하면 리다이렉트
+    // window.location.href = "/";
+  };
+
+  
+
+  //          event handler: 장소 검색 이벤트 핸들러          //
   const handleSearch = async () => {
     const kw = keyword.trim();
     if (!kw) return;
@@ -48,6 +100,8 @@ const Header = () => {
       handleSearch();
     }
   };
+
+  
 
   //          render:헤더 컴포넌트 랜더링          //
   return (
@@ -119,9 +173,26 @@ const Header = () => {
           {/* 로그인/회원가입 버튼 */}
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <button className="ml-3 bg-main-100 hover:bg-main-200 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+              {loginUser ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-700">
+                  {loginUser.nickname ?? "사용자"}
+                </span>
+                <button
+                  onClick={onLogoutButtonClickHandler}
+                  className="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                >
+                  로그아웃
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onKakaoLoginButtonClickHandler}
+                className="ml-3 bg-main-100 hover:bg-main-200 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+              >
                 카카오로그인
               </button>
+            )}
             </div>
           </div>
         </div>
