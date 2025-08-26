@@ -36,7 +36,7 @@ const SearchResults = () => {
   return (
     <div className="fixed inset-0 z-40" onClick={handleOverlayClick}>
       <div className="fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 z-50">
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto">
+        <div className="bg-white/85 rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto">
           <div className="p-3 border-b border-gray-200">
             <h3 className="text-sm font-semibold text-gray-700">검색 결과</h3>
           </div>
@@ -52,7 +52,7 @@ const SearchResults = () => {
               >
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0">
-                    <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-semibold">
+                    <div className="w-6 h-6 bg-main-200/70 text-white rounded-full flex items-center justify-center text-xs font-semibold">
                       {index + 1}
                     </div>
                   </div>

@@ -106,13 +106,13 @@ const Header = () => {
   //          render:헤더 컴포넌트 랜더링          //
   return (
     <>
-      <header className="fixed rounded-full max-h-16 top-3 left-1 right-1 z-150 backdrop-blur-xs bg-white/45 shadow-sm hover:shadow-lg border-b border-gray-200 transition-all hover:bg-white/85">
+      <header className="fixed rounded-sm max-h-16 top-3 left-1 right-1 z-150 backdrop-blur-xs bg-white/15 shadow-sm hover:shadow-lg border-b border-gray-200 transition-all hover:bg-white/85">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* 로고 */}
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <img src='./logo.png' className='w-28 h-10'/>
+                P A T H N O T E
               </div>
             </div>
 
@@ -120,12 +120,12 @@ const Header = () => {
             <div className="md:flex flex-1 max-w-lg mx-8">
               <div className="flex items-center gap-2 w-full">
                 {/* 정렬 선택 버튼 */}
-                <div className="hidden md:flex rounded-full bg-gray-100 p-1">
+                <div className="hidden md:flex rounded-full bg-main-100/55 p-1">
                   <button
                     onClick={() => setSortType('A')}
                     className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
                       sortType === 'A' 
-                        ? 'bg-white text-blue-600 shadow-sm' 
+                        ? 'bg-white/60 text-main-300 shadow-sm' 
                         : 'text-gray-600 hover:text-gray-800'
                     }`}
                   >
@@ -135,7 +135,7 @@ const Header = () => {
                     onClick={() => setSortType('R')}
                     className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
                       sortType === 'R' 
-                        ? 'bg-white text-blue-600 shadow-sm' 
+                        ? 'bg-white/60 text-main-300 shadow-sm' 
                         : 'text-gray-600 hover:text-gray-800'
                     }`}
                   >
@@ -151,12 +151,12 @@ const Header = () => {
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setIsResultsVisible(true)}
-                  className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 pr-10 bg-main-100/55 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-mian-300 focus:border-transparent"
                 />
                 <button
                   onClick={handleSearch}
                   disabled={isSearching}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-main-100 hover:text-gray-600 disabled:opacity-50"
                 >
                   {isSearching ? (
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
