@@ -97,8 +97,6 @@ export default function CoursePlaceCreate({  onCancel, places, onSubmit,}: Cours
       <div className="grid grid-cols-[auto_1fr]  gap-x-4 gap-y-2 items-start mb-4">
         <label className="text-[13px] font-bold leading-8">코스 소요 시간</label>
         <div className="flex items-center gap-8 text-[13px]">
-          <div className="text-gray-700">12:30</div>
-          <div className="text-gray-700">15:30</div>
           <div className="text-gray-500">3시간</div>
         </div>
       </div>

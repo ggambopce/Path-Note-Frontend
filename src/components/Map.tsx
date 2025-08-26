@@ -6,6 +6,7 @@ import type { CoursePlaceType } from '../types/CoursePlaceType';
 import { useSearchStore } from '../stores/SearchStores';
 import { createCourse } from '../apis/CreateCoursePlaceApi';
 import { buildCourseCreateRequest } from '../utils/BuildCourseCreateRequest';
+import { reverseLabelRequest, getPoiDetailRequest } from '../services/TmapPoiServices';
 
 const accessToken = "<JWT토큰>"; 
 const userId = "1";
@@ -29,53 +30,7 @@ interface MapProps {
 const APP_KEY = import.meta.env.VITE_TMAP_APP_KEY as string;
 console.log('[DEBUG] APP_KEY =', APP_KEY);
 // 주변 POI 1건 조회
-async function searchAroundPoi(
-  lat: number,
-  lng: number,
-  radiusKm: number = 1,
-  categories? : string,
-  count = 1
-): Promise<Poi | null> {
-  const url = new URL('https://apis.openapi.sk.com/tmap/pois/search/around');
-  url.searchParams.set('version', '1');
-  url.searchParams.set('centerLat', String(lat));
-  url.searchParams.set('centerLon', String(lng));
-  const clampedRadius = radiusKm === 0 ? 0 : Math.min(33, Math.max(1, Math.floor(radiusKm)));
-  url.searchParams.set('radius', String(clampedRadius));    // 0 또는 1~33
-  url.searchParams.set('count', String(Math.min(150, Math.max(1, count))));
 
-  if (categories && categories.trim()) {
-    url.searchParams.set('categories', categories.trim());
-  }
-
-  console.log('[DEBUG] around URL:', url.toString());
-
-  const res = await fetch(url.toString(), {
-    method: 'GET',
-    headers: { Accept: 'application/json', appKey: APP_KEY },
-  });
-  if (!res.ok) throw new Error(`around POI 실패: ${res.status}`);
-
-  const data = await res.json();
-  const list = data?.searchPoiInfo?.pois?.poi;
-  if (!Array.isArray(list) || list.length === 0) return null;
-
-  const poi = list[0];
-  return {
-    id: poi?.id,
-    name: poi?.name,
-    category: poi?.upperBizName || poi?.middleBizName || poi?.lowerBizName,
-    tel: poi?.telNo,
-    address:
-      poi?.newAddressList?.newAddress?.[0]?.fullAddressRoad ??
-      [poi?.upperAddrName, poi?.middleAddrName, poi?.lowerAddrName, poi?.detailAddrName]
-        .filter(Boolean)
-        .join(' '),
-    frontLat: Number(poi?.frontLat ?? poi?.noorLat ?? lat),
-    frontLon: Number(poi?.frontLon ?? poi?.noorLon ?? lng),
-    distance: poi?.radius ? Number(poi.radius) : undefined,
-  };
-}
 
 const Map = ({
   width = '100%',
@@ -112,46 +67,55 @@ const Map = ({
         const map = new Tmapv3.Map('map_div', mapOptions);
         mapInstanceRef.current = map;
 
-        const AROUND_RADIUS = 50;
+        //          event handler: 클릭 → ReverseLavel PoiId 확보→ 상세정보 검색 이벤트 핸들러          //
+        const handleClick = async (e: any) => {
+        // 1) 클릭 좌표: 공식 필드 사용
+        const lat = e?.data?.lngLat?.lat ?? null;
+        const lng = e?.data?.lngLat?.lng ?? null;
 
-        //          event handler: 클릭 → 좌표 → 주변 1건 조회 → 콘솔 출력 이벤트 핸들러          //
-        const handleClick = async () => {
-          const ll = map.getCenter();
-          const lat = typeof ll?.lat === 'function' ? ll.lat() : ll?.lat ?? ll?._lat;
-          const lng = typeof ll?.lng === 'function' ? ll.lng() : ll?.lng ?? ll?._lng;
-          if (lat == null || lng == null) return;
+        if (lat == null || lng == null) {
+          console.warn('[CLICK] lat/lng 없음. raw event:', e);
+          return;
+        }
 
-          console.log('클릭된 좌표 뽑기 성공', { lat, lng });
+        console.log('클릭된 좌표 뽑기 성공', { lat, lng });
 
-          setInfoLat(lat);
-          setInfoLng(lng);
-          setInfoVisible(true);
+        setInfoLat(lat);
+        setInfoLng(lng);
+        setInfoVisible(true);
 
-          const t0 = performance.now();
-          try {
-            const poi = await searchAroundPoi(lat, lng, AROUND_RADIUS);
-            const took = Math.round(performance.now() - t0);
-
-            if (!poi) {
-              console.warn('[STEP2] no POI within', AROUND_RADIUS, 'm', `(took ${took}ms)`);
-              return;
-            }
-
-            console.log(' 클릭시 반경 1km 가장 가까운 장소 객체 정보 수집', took, 'ms');
-            console.table({
-              id: poi.id,
-              name: poi.name,
-              category: poi.category ?? '',
-              tel: poi.tel ?? '',
-              address: poi.address ?? '',
-              frontLat: poi.frontLat,
-              frontLon: poi.frontLon,
-              distance_m: poi.distance ?? '(unknown)',
-            });
-          } catch (e) {
-            console.error('[STEP2] around search failed:', (e as Error).message);
+        try {
+          // 2) Reverse Label → poiId 확보
+          const rev = await reverseLabelRequest(Number(lat.toFixed(6)), Number(lng.toFixed(6)));
+          if (!rev) {
+            console.warn('[STEP1] reverseLabel 결과 없음');
+            return;
           }
-        };
+
+          // 문서: 해당 지점에 POI 없으면 id = "0"
+          if (rev.id === '0') {
+            console.log('[STEP1] POI 없음. reverse 좌표만 표시', rev);
+            console.table({
+              id: rev.id,
+              name: rev.name ?? '',
+              lat: rev.lat,
+              lon: rev.lon,
+            });
+            return;
+          }
+          console.log('[STEP1] poiId 획득:', rev.id);
+
+          // 3) POI 상세조회
+          const d = await getPoiDetailRequest(rev.id);
+       
+          
+
+          console.log('[STEP3] ReverseLabel → 상세조회 payload');
+          console.table(d);
+        } catch (err) {
+          console.error('[ERROR] Reverse/상세 조회 실패:', (err as Error).message);
+        }
+      };
 
         map.on('Click', handleClick);
 

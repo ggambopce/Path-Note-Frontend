@@ -2,6 +2,7 @@
 import type { CourseCreateRequestDto, CoursePlaceDto } from "../types/CoursePlaceDto";
 import type { CoursePlaceType } from "../types/CoursePlaceType";
 
+//          function: 코스 생성 최종 요청 DTO 빌더 함수          //
 export function buildCourseCreateRequest(
   userId: string,
   payload: { course_name: string; course_category: string; course_description: string; },
