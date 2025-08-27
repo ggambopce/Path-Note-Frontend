@@ -1,13 +1,14 @@
+// 검색 완료 or 클릭시 부모에게서 내려오는 장소 정보와 콜백 타입 
 interface MapPlaceInfoProps {
-  visible: boolean;
+  visible: boolean;               // 컴포넌트 표시 여부
   lat: number | null;
   lng: number | null;
-  poi?: {
+  poi?: {                         // 현재 검색결과 조회정보만 있고 상세조회 결과는 없음, 추후 보완 필요
     name?: string;
     address?: string;
   } | null;
   onClose: () => void;
-  onOpenCoursePanel?: () => void;
+  onOpenCoursePanel?: () => void; // 코스에 추가하기 버튼 클릭시 실행되는 콜백
 }
 
 
@@ -20,7 +21,7 @@ export default function MapPlaceInfo({
   onClose,
   onOpenCoursePanel,
 }: MapPlaceInfoProps) {
-    if (!visible) return null;
+    if (!visible) return null;    // false일때 아무것도 랜더링하지 않음 
 
     const title   = poi?.name;
     const addr    = poi?.address;

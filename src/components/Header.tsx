@@ -9,7 +9,7 @@ import useLoginUserStore from '../stores/LoginUserStores';
 //          component: 헤더 컴포넌트          //
 const Header = () => {
   const [sortType, setSortType] = useState<'A' | 'R'>('A'); // A: 정확도순, R: 거리순
-  const { center } = useMapStore();
+  const { center } = useMapStore();               
   const { setLoginUser, resetLoginUser, loginUser } = useLoginUserStore();
   const { 
     keyword, 
@@ -19,8 +19,13 @@ const Header = () => {
     setIsSearching,
     setIsResultsVisible 
   } = useSearchStore();
-
-  //          effect: 토큰 로컬스토리지 저장  사용자 정보 저장          //
+  
+  //          effect: OAuth 리다이렉트후 토큰회수 -> 로컬스토리지 저장 -> 사용자 정보 저장          //
+  /**
+   * 1. 로그인후 리다이렉트 된 URL 쿼리스트링에서 accessToken에서 토큰을 회수한다.
+   * 2. 토큰을 로컬스토리지에 저장
+   * 3. 토큰을 사용하여 /me 백엔드 호출 -> 전역 스토어에 로그인 사용자 정보 저장
+   */
   useEffect(() => {
     (async () => {
       // 1) URL 쿼리에서 accessToken 회수
@@ -67,9 +72,11 @@ const Header = () => {
     // window.location.href = "/";
   };
 
-  
-
   //          event handler: 장소 검색 이벤트 핸들러          //
+  /**
+   * 현재 keyword/정렬/중심좌표를 바탕으로 searchPOI 서비스 호출
+   * 성공: 결과 저장 및 결과 패널 오픈 / 실패: 에러 처리 / 종료: 로딩 플래그 해제
+   */
   const handleSearch = async () => {
     const kw = keyword.trim();
     if (!kw) return;
@@ -95,13 +102,12 @@ const Header = () => {
     }
   };
 
+  //           event handler: 검색창 Enter 키입력 처리          //
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   };
-
-  
 
   //          render:헤더 컴포넌트 랜더링          //
   return (

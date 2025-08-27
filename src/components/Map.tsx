@@ -8,20 +8,9 @@ import { createCourse } from '../apis/CreateCoursePlaceApi';
 import { buildCourseCreateRequest } from '../utils/BuildCourseCreateRequest';
 import { reverseLabelRequest, getPoiDetailRequest } from '../services/TmapPoiServices';
 
+// 추후 백엔드 연결이후 요청헤더에 토큰을 추가하는 로직 필요
 const accessToken = "<JWT토큰>"; 
 const userId = "1";
-
-type Poi = {
-  id: string;
-  name: string;             
-  category?: string;
-  tel?: string;
-  address?: string;
-  frontLat: number;
-  frontLon: number;
-  distance?: number;
-};
-
 interface MapProps {
   width: string;
   height: string;
@@ -29,29 +18,44 @@ interface MapProps {
 
 const APP_KEY = import.meta.env.VITE_TMAP_APP_KEY as string;
 console.log('[DEBUG] APP_KEY =', APP_KEY);
-// 주변 POI 1건 조회
 
-
+//          component: 메인 맵 부모 컴포넌트          //
+/** 현재 역할
+ * 1.지도 초기화/이벤트 바인딩
+ * 2.검색 선택 POI에 대한 마커 갱신
+ * 3.코스 장소 상태 관리 및 최종 코스 생성 요청
+ * 4.클릭 리버스라벨→POI 상세조회
+ */
 const Map = ({
   width = '100%',
   height = '400px',
 }: MapProps) => {
+
+  //          useRef: 상태 변화시 리랜더링 되지 않는 부분          //
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const { Tmapv3 } = window as any;
 
+  //          state: 장소 정보 컴포넌트 표시 상태 관리          //
   const [infoVisible, setInfoVisible] = useState(true);
+  //          state: 장소 정보 컴포넌트 좌표 상태 관리          //
   const [infoLat, setInfoLat] = useState<number | null>(null);
   const [infoLng, setInfoLng] = useState<number | null>(null);
+  //          state: 장소 리스트 패널 상태 관리          //
   const [isCoursePanelOpen, setIsCoursePanelOpen] = useState(false);
-  const [isCoursePlaceCreatePanelOpen, setIsCoursePlaceCreatePanelOpen] = useState(false);
+  //          state: 장소 리스트 상태 관리          //
   const [coursePlaces, setCoursePlaces] = useState<CoursePlaceType[]>([]);
-
+  //          state: 최종 코스 생성 폼 패널 상태 관리          //
+  const [isCoursePlaceCreatePanelOpen, setIsCoursePlaceCreatePanelOpen] = useState(false);
+  
+  // 장소 정보 컴포넌트에 표시할 POI정보는 selectedPOI 기반
+  // 추후 지도 클릭으로 얻은 상세정보(d)도 보여주려면 컴포넌트 생성 후 별도 로컬 상태(infoPoi) 도입 또는 selectedPOI 전역 업데이트 필요
   const selectedPOI = useSearchStore(s => s.selectedPOI);
+  // 경로 순서 상태 관리용 단순 증가 ID
   const idRef = useRef(1);
   
-  //          effect: 지도 초기화          //
+  //          effect: 지도 초기화, 클릭 이벤트 바인딩/해제          //
   useEffect(() => {
     if (!Tmapv3 || mapInstanceRef.current) return;
 
@@ -67,9 +71,9 @@ const Map = ({
         const map = new Tmapv3.Map('map_div', mapOptions);
         mapInstanceRef.current = map;
 
-        //          event handler: 클릭 → ReverseLavel PoiId 확보→ 상세정보 검색 이벤트 핸들러          //
+        //          event handler: 클릭 → ReverseLavel PoiId 확보 → 상세정보 검색 이벤트 핸들러          //
         const handleClick = async (e: any) => {
-        // 1) 클릭 좌표: 공식 필드 사용
+        // 1) 클릭 좌표 추출 변수 정의: 공식 필드 사용
         const lat = e?.data?.lngLat?.lat ?? null;
         const lng = e?.data?.lngLat?.lng ?? null;
 
@@ -80,9 +84,10 @@ const Map = ({
 
         console.log('클릭된 좌표 뽑기 성공', { lat, lng });
 
-        setInfoLat(lat);
+        
+        setInfoLat(lat);      // 장소 기본컴포넌트 좌표갱신
         setInfoLng(lng);
-        setInfoVisible(true);
+        setInfoVisible(true); // 장소 기본컴포넌트 창 열림
 
         try {
           // 2) Reverse Label → poiId 확보
@@ -107,9 +112,7 @@ const Map = ({
 
           // 3) POI 상세조회
           const d = await getPoiDetailRequest(rev.id);
-       
-          
-
+      
           console.log('[STEP3] ReverseLabel → 상세조회 payload');
           console.table(d);
         } catch (err) {
@@ -171,7 +174,7 @@ const Map = ({
     });
   }, [selectedPOI, Tmapv3]);
 
-  //          event handler: 최종 코스 작성 패널 열기          //
+  //          event handler: 최종 코스 작성 패널 열기 이벤트 핸들러          //
   const handleOpenCoursePanel = () => {
     if (!selectedPOI) {
     console.warn('[COURSE] 선택된 검색 결과가 없습니다.');
@@ -221,7 +224,7 @@ const Map = ({
   const res = await createCourse(req, accessToken);
 };
 
-  //          render: 메인 맵 랜더링          //
+  //          render: 메인 맵, 장소기본정보, 장소리스트패널, 코스생성패널 랜더링          //
   return (
     <div>
       <div
@@ -231,7 +234,7 @@ const Map = ({
         className="w-full h-full"
       />
 
-      {/* 맵 장소 정보 */}
+      {/* 맵 장소기본정보 창 */}
       <div className="absolute top-1/2 left-7/8 -translate-x-1/2 -translate-y-1/2">
         <MapPlaceInfo
           visible={infoVisible}
@@ -246,14 +249,14 @@ const Map = ({
         />
       </div>
 
-      {/* 코스 작성 */}
+      {/* 최종 코스 등록 패널 */}
       {isCoursePlaceCreatePanelOpen && (
         <div className="absolute top-1/2 left-3/5 -translate-x-1/2 -translate-y-1/2">
           <CoursePlaceCreate onCancel={handleCloseCoursePlaceCreate} places={coursePlaces} onSubmit={handleSubmitCourse} />
         </div>
       )}
 
-      {/* 코스 장소 리스트 */}
+      {/* 좌측 장소 리스트 패널 */}
       {isCoursePanelOpen && (
         <aside className="absolute left-4 top-20 bottom-4 z-10 w-72 rounded-3xl bg-white/80 backdrop-blur shadow-xl ring-1 ring-black/10">
           <div className="flex h-full flex-col">

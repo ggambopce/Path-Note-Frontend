@@ -65,7 +65,7 @@ export const searchPOI = async (
   if (res.status === 204) return [];
 
   if (res.status >= 400) {
-    console.error('[POI] HTTP', res.status, res.statusText);
+    console.error('[POI] HTTP', res.status, res.statusText);s
     console.error('[POI] body =', res.data);
     throw new Error(`요청 실패: HTTP ${res.status}`);
   }

@@ -2,28 +2,30 @@ import { useState } from "react";
 import type { CoursePlaceType } from "../types/CoursePlaceType";
 
 // 서버에 보낼 페이로드 타입
+// 코스 생성 시 서버로 전송할 데이터 구조
 export type CourseCreatePayload = {
   course_name: string;
-  course_category: string;
+  course_category: string;        // 코스 카테고리
   course_description: string;
 };
 
-
+// 부모 컴포넌트에서 전달받은 콜백함수 타입정의
 interface CoursePlaceCreateProps {
-  onCancel: () => void;
-  places: CoursePlaceType[];
-  onSubmit: (payload: CourseCreatePayload) => void;
+  onCancel: () => void;                             // 취소 버튼 클릭시 실행되는 콜백
+  places: CoursePlaceType[];                        // 선택된 장소리스트
+  onSubmit: (payload: CourseCreatePayload) => void; // 입력 완료시 서버에 보낼 데이터를 전달하는 콜백
 }
 
 //          component: 코스 장소 등록 컴포넌트          //
 export default function CoursePlaceCreate({  onCancel, places, onSubmit,}: CoursePlaceCreateProps) {
 
-  //          states: 폼 데이터 상태          //
+  //          states: 폼 데이터 상태 관리          //
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   
   //          event handler: 장소 등록 이벤트 핸들러          //
+  // 폼 제출시 실행 입력된 값으로 payload 객체 생성 후 실행
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   

@@ -1,3 +1,4 @@
+// 코스생성시 부모로부터 넘어오는 장소리스트 관련 정보와 콜백 함수 타입 정의
 interface CoursePlaceItemProps {
   id: number;
   index: number;
@@ -6,10 +7,9 @@ interface CoursePlaceItemProps {
   phone?: string;
   arrivalTime?: string;
   departureTime?: string;
-  onRemove: (id: number) => void;
-  onTimeChange?: (id: number, t: { arrivalTime?: string; departureTime?: string }) => void;
+  onRemove: (id: number) => void;           // 선택한 장소를 삭제하는 콜백
+  onTimeChange?: (id: number, t: { arrivalTime?: string; departureTime?: string }) => void; // 출발,도착 시간 변경시 실행되는 콜백
 }
-
 
 //          component: 코스 장소 아이템 컴포넌트          //
 export default function CoursePlaceItem({ id, index, name, address, phone, arrivalTime, departureTime, onRemove, onTimeChange, }: CoursePlaceItemProps) {
